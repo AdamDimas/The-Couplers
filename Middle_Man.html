@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middle Man</title>
+    <link rel="stylesheet" href="Style_CSS/Middle_Man.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <h4>The Couplers</h4>
+        </div>
+
+        <input type="checkbox" id="menu-bar">
+        <label for="menu-bar">Menu</label>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a>The Couplers<i class="fa fa-angle-down"></i></a>
+                    <ul>
+                        <li>
+                            <li><a href="Feature_Envy.html">Feature Envy</a>
+                                <li><a href="Inappropriate_Intimacy.html">Inappropriate Intimacy</a>
+                                <li><a href="Message_Chains.html">Message Chains</a>
+                                <li><a href="Middle_Man.html">Middle Man</a>
+                    </ul>
+                </li>
+                <li><a href="https://github.com/AdamDimas/The-Couplers.git">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="content1">
+        <h1>Middle Man</h1>
+        <p>Middle Man adalah terjadi ketika sebuah kelas berperan sebagai perantara yang hanya meneruskan panggilan atau delegasi 
+            ke kelas lain tanpa menambahkan nilai tambah atau logika yang signifikan. Dalam situasi ini, middle man tidak melakukan banyak 
+            pekerjaan sendiri, tetapi hanya meneruskan panggilan ke kelas lain, yang bisa menyebabkan overhead yang tidak perlu dan meningkatkan 
+            kompleksitas kode.</p>
+    </div>
+
+    <hr class="hr1">
+    
+    <div class="layer2">
+        <div class="container2">
+            <h4>Kenapa bisa terjadi "Middle Man"?</h4><br> 
+            <p>Smell ini bisa jadi hasil dari penghapusan Rantai Pesan yang terlalu bersemangat. Dalam kasus lain, ini bisa jadi hasil 
+                dari pekerjaan yang berguna dari sebuah kelas yang secara bertahap dipindahkan ke kelas lain. Kelas tetap sebagai sebuah 
+                shell kosong yang tidak melakukan apa pun selain mendelegasikan.
+            </p>
+        </div>
+    </div>
+    </div>
+    <hr class="hr2">
+
+
+    <div class="layer3">
+        <div class="container1">
+            <h4>Cara Mengatasi</h4>
+            <p>Jika sebagian besar kelas metode didelegasikan ke kelas lain, Hapus Middle Man adalah yang paling tepat.</p>
+        </div>
+    </div>
+    <hr class="hr3">
+
+    <div class="layer4">
+        <div class="container1">
+            <h4>Contoh Code</h4>
+                <h5>Sebelum Refactor</h5>
+                <pre style="tab-size: 4;">
+                    <code class="language-java">
+public class MiddleMan {
+    private Service service;
+
+    public MiddleMan() {
+        this.service = new Service();
+    }
+
+    public void doSomething() {
+        service.performAction();
+    }
+
+    public void doAnotherThing() {
+        service.performAnotherAction();
+    }
+}
+
+public class Service {
+    public void performAction() {
+        // Logic for performing action
+    }
+
+    public void performAnotherAction() {
+        // Logic for performing another action
+    }
+}
+
+
+                    </code>
+                </pre>
+                <div class="penjelasan2">
+                    <p>Dalam contoh di atas, kelas MiddleMan bertindak sebagai perantara yang hanya meneruskan panggilan ke 
+                        kelas Service tanpa menambahkan nilai tambah atau logika tambahan. Hal ini menyebabkan kelas MiddleMan menjadi 
+                        tidak diperlukan dan memperkenalkan overhead yang tidak perlu.</p>
+                </div>
+            
+                <h5>Setelah Refactor</h5>
+                <pre style="tab-size: 4;">
+                    <code class="language-java">
+public class ServiceClient {
+    private Service service;
+
+    public ServiceClient() {
+        this.service = new Service();
+    }
+
+    public void doSomething() {
+        service.performAction();
+    }
+
+    public void doAnotherThing() {
+        service.performAnotherAction();
+    }
+}
+
+public class Service {
+    public void performAction() {
+        // Logic for performing action
+    }
+
+    public void performAnotherAction() {
+        // Logic for performing another action
+    }
+}
+
+                    </code>
+                </pre>
+                <div class="penjelasan2">
+                    <p>Setelah refaktorisasi, kita menghapus kelas MiddleMan dan memindahkan logika penggunaan kelas Service langsung ke 
+                        kelas ServiceClient. Sekarang, kelas ServiceClient langsung berinteraksi dengan kelas Service, menghilangkan overhead 
+                        dan kompleksitas yang disebabkan oleh middle man. Kode menjadi lebih bersih dan lebih langsung dalam penggunaan layanan.</p>
+                </div>
+            </div>
+        </div>
+
+    <hr class="hr4">
+    <div class="footer">
+        Adam Dimas Alferizle
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+
+</html>

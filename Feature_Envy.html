@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Envy</title>
+    <link rel="stylesheet" href="Style_CSS/Feature_Envy.css">
+    
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <h4>The Couplers</h4>
+        </div>
+
+        <input type="checkbox" id="menu-bar">
+        <label for="menu-bar">Menu</label>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a>The Couplers<i class="fa fa-angle-down"></i></a>
+                    <ul>
+                        <li>
+                            <li><a href="Feature_Envy.html">Feature Envy</a>
+                                <li><a href="Inappropriate_Intimacy.html">Inappropriate Intimacy</a>
+                                <li><a href="Message_Chains.html">Message Chains</a>
+                                <li><a href="Middle_Man.html">Middle Man</a>
+                    </ul>
+                </li>
+                <li><a href="https://github.com/AdamDimas/The-Couplers.git">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="content1">
+        <h1>Feature Envy</h1>
+        <p>Feature Envy adalah sebuah smell code di mana sebuah kelas terlalu tergantung pada fitur atau data dari kelas lain. 
+            Ini menunjukkan bahwa mungkin ada potensi untuk memindahkan logika atau operasi yang berkaitan dengan fitur tersebut ke kelas yang sesuai, 
+            untuk meningkatkan kohesi dan mengurangi ketergantungan antara kelas.</p>
+    </div>
+
+    <hr class="hr1">
+    
+    <div class="layer2">
+        <div class="container2">
+            <h4>Kenapa bisa terjadi "Feature Envy"?</h4><br> 
+            <p>Biasanya, karena desain yang kurang optimal atau karena tidak memperhatikan prinsip-prinsip desain yang baik, 
+                seperti prinsip kohesi dan coupling yang rendah. Ini bisa terjadi ketika logika yang seharusnya berada di dalam sebuah kelas 
+                malah tersebar di beberapa kelas lain, mungkin karena pengorganisasian yang kurang baik atau kebingungan tentang tanggung jawab 
+                masing-masing kelas. Selain itu, ketika pengembang tidak memperhatikan prinsip-prinsip pemisahan kepentingan (separation of concerns), 
+                maka muncullah kecenderungan untuk mengabaikan batas-batas tanggung jawab antara kelas-kelas dalam sistem.</p>
+        </div>
+    </div>
+    
+    <hr class="hr2">
+
+
+    <div class="layer3">
+        <div class="container1">
+            <h4>Cara Mengatasi</h4>
+            <ul>
+                <li>Jika sebuah metode jelas harus dipindahkan ke tempat lain, gunakan Move Method.</li>
+                <li>Jika hanya sebagian dari metode yang mengakses data objek lain, gunakan Extract Method untuk memindahkan bagian yang dimaksud.</li>
+                <li>Jika sebuah metode menggunakan fungsi dari beberapa kelas lain, tentukan terlebih dahulu kelas mana yang berisi sebagian besar 
+                    data yang digunakan. Kemudian letakkan metode di kelas ini bersama dengan data lainnya. Atau, gunakan Extract Method untuk membagi 
+                    metode menjadi beberapa bagian yang dapat ditempatkan di tempat yang berbeda di kelas yang berbeda.</li>
+            </ul>
+        </div>
+    </div>
+    <hr class="hr3">
+
+    <div class="layer4">
+        <div class="container1">
+            <h4>Contoh Code</h4>
+            <div class="penjelasan1">
+                
+                <h5>Sebelum Refactor</h5>
+                <pre style="tab-size: 4;">
+                    <code class="language-java">
+public class ShoppingCart {
+    private List<Item> items;
+
+    public ShoppingCart(List<Item> items) {
+        this.items = items;
+    }
+
+    public double calculateTotalPrice(Map<Item, Double> prices) {
+        double totalPrice = 0;
+        for (Item item : items) {
+            totalPrice += prices.get(item);
+        }
+        return totalPrice;
+    }
+}
+
+public class PriceCalculator {
+    private ShoppingCart cart;
+
+    public PriceCalculator(ShoppingCart cart) {
+        this.cart = cart;
+    }
+
+    public double calculateTotalPrice(Map<Item, Double> prices) {
+        return cart.calculateTotalPrice(prices);
+    }
+}
+                   </code>
+                </pre>
+                <div class="penjelasan2">
+                    <p>Dalam contoh di bawah, kelas PriceCalculator memiliki kecenderungan Feature Envy terhadap kelas ShoppingCart, 
+                        karena mayoritas metodenya hanya memanggil metode calculateTotalPrice dari ShoppingCart. Ini menunjukkan bahwa 
+                        logika perhitungan harga seharusnya lebih sesuai dengan PriceCalculator daripada ShoppingCart.</p>
+                </div>
+           
+                <h5>Setelah Refactor</h5>
+                <pre style="tab-size: 4;">
+                    <code class="language-java">
+public class ShoppingCart {
+    private List<Item> items;
+
+    public ShoppingCart(List<Item> items) {
+        this.items = items;
+    }
+
+    public double calculateTotalPrice(Map<Item, Double> prices) {
+        double totalPrice = 0;
+        for (Item item : items) {
+            totalPrice += prices.get(item);
+        }
+        return totalPrice;
+    }
+}
+
+public class PriceCalculator {
+    private ShoppingCart cart;
+
+    public PriceCalculator(ShoppingCart cart) {
+        this.cart = cart;
+    }
+
+    public double calculateTotalPrice(Map<Item, Double> prices) {
+        return cart.calculateTotalPrice(prices);
+    }
+}
+
+                    </code>
+                </pre>
+                <div class="penjelasan2">
+                    <p>Setelah refaktorisasi, kita memutuskan untuk tidak melakukan perubahan apapun karena kodenya sudah cukup baik 
+                        dan tidak ada tanda-tanda Feature Envy yang berlebihan. Setiap kelas bertanggung jawab atas bagian logika yang sesuai, 
+                        dan tidak ada ketergantungan yang berlebihan antara kelas PriceCalculator dan ShoppingCart. Keduanya bekerja sesuai dengan 
+                        tujuan dan tanggung jawabnya masing-masing.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="hr4">
+    <div class="footer">
+         Adam Dimas Alferizle
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+
+</html>

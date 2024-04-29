@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Chains</title>
+    <link rel="stylesheet" href="Style_CSS/Message_Chains.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <h4>The Couplers</h4>
+        </div>
+
+        <input type="checkbox" id="menu-bar">
+        <label for="menu-bar">Menu</label>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a>The Couplers<i class="fa fa-angle-down"></i></a>
+                    <ul>
+                        <li>
+                            <li><a href="Feature_Envy.html">Feature Envy</a>
+                                <li><a href="Inappropriate_Intimacy.html">Inappropriate Intimacy</a>
+                                <li><a href="Message_Chains.html">Message Chains</a>
+                                <li><a href="Middle_Man.html">Middle Man</a>
+                    </ul>
+                </li>
+                <li><a href="https://github.com/AdamDimas/The-Couplers.git">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="content1">
+        <h1>Message Chains</h1>
+        <p>Message Chains terjadi ketika kelas atau metode secara berurutan memanggil metode atau akses properti dari objek lain. 
+            Ini menciptakan rantai pesan yang panjang, di mana satu pemanggilan metode atau akses properti digunakan untuk mendapatkan 
+            objek lain, yang kemudian digunakan untuk melakukan pemanggilan metode atau akses properti berikutnya, dan seterusnya. Kondisi
+            ini menyebabkan ketergantungan kuat antara kelas-kelas dalam sistem dan membuat kode sulit dibaca, dimengerti, dan dipelihara.</p>
+    </div>
+
+    <hr class="hr1">
+    
+    <div class="layer2">
+        <div class="container2">
+            <h4>Alasan utama terjadinya "Message Chains":</h4>
+            <p>Smell ini terjadi ketika ingin mengakses sebuah method, perlu dilakukan pemanggilan dari hasil 
+                return method lainnya sehingga membentuk rantai.</p>
+        </div>
+    </div>
+    </div>
+    <hr class="hr2">
+
+
+    <div class="layer3">
+        <div class="container1">
+            <h4>Cara Mengatasi</h4>
+            <ul>
+                <li>Untuk menghapus Message Chains, gunakan Hide Delegate.</li>
+                    <br>
+                <li>Terkadang lebih baik untuk memikirkan mengapa objek akhir digunakan. Mungkin akan lebih masuk akal untuk 
+                    menggunakan Extract Method untuk fungsi ini dan memindahkannya ke awal rantai, dengan menggunakan Move Method.</li>
+            </ul>
+        </div>
+    </div>
+    <hr class="hr3">
+
+    <div class="layer4">
+        <div class="container1">
+            <h5>Contoh Code</h5>
+                        <pre style="tab-size: 4;">
+                            <code class="language-java">
+public class School {
+    private Teacher teacher;
+
+    public School(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public void printTeacherName() {
+        if (teacher != null && teacher.getDepartment() != null && teacher.getDepartment().getHead() != null) {
+            System.out.println("Teacher's Name: " + teacher.getDepartment().getHead().getName());
+        } else {
+            System.out.println("Teacher's Name: Unknown");
+        }
+    }
+}
+
+public class Teacher {
+    private String name;
+    private Department department;
+
+    public Teacher(String name, Department department) {
+        this.name = name;
+        this.department = department;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+}
+
+public class Department {
+    private String name;
+    private Teacher head;
+
+    public Department(String name, Teacher head) {
+        this.name = name;
+        this.head = head;
+    }
+
+    public Teacher getHead() {
+        return head;
+    }
+}
+                                                   
+                            </code>
+                        </pre>
+                        <div class="penjelasan2">
+                            <p>Pada contoh di atas, kita memiliki message chains yang terjadi pada metode printTeacherName() di kelas School. 
+                                Dalam metode ini, kita melihat sebuah rantai pesan yang panjang untuk mendapatkan nama kepala departemen dari seorang 
+                                guru. Hal ini menyebabkan kelas School memiliki ketergantungan yang kuat pada struktur internal kelas Teacher dan Department.
+                            </p>
+                        </div>
+                    
+                        <h5>Setelah Refactor</h5>
+                        <pre style="tab-size: 4;">
+                            <code class="language-java">
+public class School {
+    private Teacher teacher;
+
+    public School(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public void printTeacherName() {
+        if (teacher != null) {
+            String teacherName = teacher.getHeadTeacherName();
+            if (teacherName != null) {
+                System.out.println("Teacher's Name: " + teacherName);
+            } else {
+                System.out.println("Teacher's Name: Unknown");
+            }
+        } else {
+            System.out.println("Teacher's Name: Unknown");
+        }
+    }
+}
+
+public class Teacher {
+    private String name;
+    private Department department;
+
+    public Teacher(String name, Department department) {
+        this.name = name;
+        this.department = department;
+    }
+
+    public String getHeadTeacherName() {
+        if (department != null) {
+            return department.getHeadTeacherName();
+        }
+        return null;
+    }
+}
+
+public class Department {
+    private String name;
+    private Teacher head;
+
+    public Department(String name, Teacher head) {
+        this.name = name;
+        this.head = head;
+    }
+
+    public String getHeadTeacherName() {
+        if (head != null) {
+            return head.getName();
+        }
+        return null;
+    }
+}
+                            </code>
+                        </pre>
+                        <div class="penjelasan2">
+                            <p>Setelah refaktorisasi, kita telah memindahkan logika untuk mendapatkan nama kepala departemen dari School ke kelas 
+                                Teacher dan Department masing-masing. Sekarang, metode printTeacherName() hanya bertanggung jawab untuk mencetak nama guru, 
+                                dan logika untuk mendapatkan nama kepala departemen telah diabstraksikan ke dalam kelas Teacher dan Department. Hal ini 
+                                mengurangi ketergantungan antar kelas dan membuat kode lebih mudah dimengerti serta dipelihara.</p>
+                        </div>
+                    </div>
+                </div>
+            
+
+    <hr class="hr4">
+    <div class="footer">
+        Adam Dimas Alferizle
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+
+</html>

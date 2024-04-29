@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inappropriate Intimacy</title>
+    <link rel="stylesheet" href="Style_CSS/Inappropriate_Intimacy.css">
+   
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <h4>The Couplers</h4>
+        </div>
+
+        <input type="checkbox" id="menu-bar">
+        <label for="menu-bar">Menu</label>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a>The Couplers <i class="fa fa-angle-down"></i></a>
+                    <ul>
+                        <li>
+                            <li><a href="Feature_Envy.html">Feature Envy</a>
+                                <li><a href="Inappropriate_Intimacy.html">Inappropriate Intimacy</a>
+                                <li><a href="Message_Chains.html">Message Chains</a>
+                                <li><a href="Middle_Man.html">Middle Man</a>
+                    </ul>
+                </li>
+                <li><a href="https://github.com/AdamDimas/The-Couplers.git">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="content1">
+        <h1>Inappropriate Intimacy</h1>
+        <p>Inappropriate Intimacy adalah salah satu bau kode yang menunjukkan terlalu eratnya hubungan atau ketergantungan antara 
+            dua kelas dalam sebuah sistem. Intimasi yang tidak sesuai bisa terjadi ketika satu kelas memiliki akses langsung ke detail 
+            implementasi atau data internal dari kelas lain, yang seharusnya seharusnya tidak seharusnya diakses secara langsung. Hal ini 
+            dapat mengakibatkan ketergantungan yang berlebihan antara kelas-kelas, meningkatkan kompleksitas dan membuat kode sulit dipelihara atau 
+            dimodifikasi di masa mendatang.</p>
+    </div>
+
+    <hr class="hr1">
+    
+    <div class="layer2">
+        <div class="container2">
+            <h4>Kenapa bisa terjadi "Inappropriate Intimacy"?</h4><br>
+            <p> Biasanya, karena hubungan antar class yang terlalu intim, menyebabkan class yang satu mengeksploitasi internal 
+                field dan/atau method di class lain. Hal ini berbahaya karena class yang internal logic-nya diakses bisa mendapat 
+                perlakuan yang tidak terduga.</p>
+        </div>
+    </div>
+    <hr class="hr2">
+
+
+    <div class="layer3">
+        <div class="container1">
+            <h4>Cara Mengatasi</h4>
+            <ul>
+                <li>Dilakukan Change Bidirectional Association to Unidirectional.</li>
+                    
+                <li>Sembunyikan detail internal kelas dan batasi akses ke data atau metode dengan menggunakan konsep enkapsulasi.</li>
+            </ul>
+        </div>
+    </div>
+    <hr class="hr3">
+
+    <div class="layer4">
+        <div class="container1">
+            <h4>Contoh Code</h4>
+                        <h5>Sebelum Refactor</h5>
+                        <pre style="tab-size: 4;">
+                            <code class="language-java">
+public class BankAccount {
+    private String accountNumber;
+    private double balance;
+    private Customer customer;
+
+    public BankAccount(String accountNumber, double balance, Customer customer) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.customer = customer;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+        // Notify customer about the deposit
+        customer.notifyDeposit(amount);
+    }
+
+    public void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            // Notify customer about the withdrawal
+            customer.notifyWithdrawal(amount);
+        } else {
+            System.out.println("Insufficient funds");
+        }
+    }
+}
+
+public class Customer {
+    private String name;
+    private BankAccount account;
+
+    public Customer(String name, BankAccount account) {
+        this.name = name;
+        this.account = account;
+    }
+
+    public void notifyDeposit(double amount) {
+        System.out.println("Dear " + name + ", $" + amount + " has been deposited into your account.");
+    }
+
+    public void notifyWithdrawal(double amount) {
+        System.out.println("Dear " + name + ", $" + amount + " has been withdrawn from your account.");
+    }
+}
+  
+                            </code>
+                        </pre>
+                        <div class="penjelasan2">
+                            <p>Dalam contoh di atas, kelas BankAccount memiliki ketergantungan yang tidak sesuai terhadap kelas Customer. 
+                                Hal ini terlihat pada metode deposit() dan withdraw(), di mana kelas BankAccount secara langsung memanggil 
+                                metode notifyDeposit() dan notifyWithdrawal() dari kelas Customer. Hal ini menyebabkan BankAccount memiliki 
+                                pengetahuan yang tidak perlu tentang detail implementasi Customer, yang menunjukkan adanya Inappropriate Intimacy.
+                            </p>
+                        </div>
+                   
+                        <h5>Setelah Refactor</h5>
+                        <pre style="tab-size: 4;">
+                            <code class="language-java">
+public class BankAccount {
+    private String accountNumber;
+    private double balance;
+    private Customer customer;
+
+    public BankAccount(String accountNumber, double balance, Customer customer) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.customer = customer;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+        // Notify customer about the deposit
+        customer.notifyDeposit(amount);
+    }
+
+    public void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            // Notify customer about the withdrawal
+            customer.notifyWithdrawal(amount);
+        } else {
+            System.out.println("Insufficient funds");
+        }
+    }
+}
+
+public class Customer {
+    private String name;
+
+    public Customer(String name) {
+        this.name = name;
+    }
+
+    public void notifyDeposit(double amount) {
+        System.out.println("Dear " + name + ", $" + amount + " has been deposited into your account.");
+    }
+
+    public void notifyWithdrawal(double amount) {
+        System.out.println("Dear " + name + ", $" + amount + " has been withdrawn from your account.");
+    }
+}
+
+                            </code>
+                        </pre>
+                        <div class="penjelasan2">
+                            <p>Setelah refaktorisasi, kelas BankAccount tidak lagi memiliki ketergantungan langsung pada kelas Customer. 
+                                Kami memutuskan untuk menghilangkan kelas Customer dari parameter konstruktor BankAccount dan mengubah metode 
+                                notifyDeposit() dan notifyWithdrawal() pada kelas Customer agar tidak lagi membutuhkan referensi BankAccount. 
+                                Dengan demikian, kami berhasil mengurangi Inappropriate Intimacy antara kelas BankAccount dan Customer.</p>
+                        </div>
+                    </div>
+                </div>
+
+    <hr class="hr4">
+    <div class="footer">
+        Adam Dimas Alferizle
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+
+</html>
